@@ -1,9 +1,9 @@
 ---
 title: "HW 04 - Model and review"
-subtitle: "Due: 14 November, 12:00 UK time"
+subtitle: "Due: 18 November, 12:00 UK time"
 author: "YOUR NAME"
 date: "TODAY'S DATE"
-output: github_document
+output: html_document
 ---
 
 ```{r load-packages, message=FALSE, warning=FALSE}
