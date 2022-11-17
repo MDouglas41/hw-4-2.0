@@ -14,8 +14,7 @@ library(tidymodels)
 
 ```{r eval=FALSE}
 
-gss16<-___
-
+gss16<-read_csv( "gss16.csv")
 ```
 
 
@@ -23,21 +22,23 @@ gss16<-___
 
 #### Code
 
-```{r eval=FALSE}
-# change eval=FALSE to eval=TRUE
+```{r eval=TRUE}
+
 
 gss16 <- gss16 %>%
-  ___(
+  mutate(
     advfront = case_when(
-      ___,
-      ___,
-      ___
+     advfront == "Agree" ~ "Agree",
+     advfront == "Strongly agree" ~ "Agree",
+     advfront == "Disagree" ~ "Not agree",
+     advfront == "Dont know" ~ "Not agree",
+     advfront == "Strongly disagree" ~ "Not agree"
     ),
-    advfront = fct_relevel(advfront, ___, ___)
+    advfront = fct_relevel(advfront, "Not agree", "Agree ")
   )
 
 gss16 %>%
-  ___(advfront)
+  count(advfront)
 ```
 
 ### Ex. 1. b)
@@ -45,19 +46,35 @@ gss16 %>%
 #### Code
 
 ```{r}
+gss16 <- gss16 %>%
+  mutate(
+    polviews = case_when(
+     polviews == "Moderate" ~ "Moderate",
+     polviews == "Conservative" ~ "Conservative",
+     polviews == "Extrmly conservative" ~ "Conservative",
+     polviews == "slghtly conservative" ~ "Conservative",
+     polviews == "Slightly liberal" ~ "Liberal",
+     polviews == "Extremely liberal" ~ "Liberal",
+     polviews == "Liberal" ~ "Liberal"
+    ),
+    polviews = fct_relevel(polviews, "Conservative", "Moderate ", "Liberal" )
+  )
 
+gss16 %>%
+  count(polviews)
 ```
 
 ### Ex. 1. c)
 
 #### Code
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 # change eval=FALSE to eval=TRUE
 
 gss16_advfront <- gss16 %>%
-  ___(___, ___, ___, ___) %>%
+  select(advfront, educ, polviews, wrkstat) %>%
   drop_na()
+print (gss16_advfront)
 ```
 
 
@@ -65,7 +82,7 @@ gss16_advfront <- gss16 %>%
 
 ### Split into training and test set
 
-```{r split-data, eval=FALSE}
+```{r split-data, eval=TRUE}
 # change eval=FALSE to eval=TRUE
 
 set.seed(1234)
@@ -77,27 +94,32 @@ gss16_test  <- testing(gss16_split)
 
 #### Recipe
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 # change eval=FALSE to eval=TRUE
 
-gss16_rec_1 <- ___(___ ~ ___, data = ___) %>%
-  step_other(wrkstat, threshold = ___, other = ___) %>%
-  step_dummy(___, ___)
+gss16_rec_1 <- recipe(advfront ~ . , data = gss16_advfront) %>%
+  step_other(wrkstat, threshold = 0.1, other = "workstat") %>%
+  step_dummy(all_nominal(), all_outcomes())
 ```
 
 #### Model 
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 # change eval=FALSE to eval=TRUE
+gss16_spec_1 <- logistic_reg() %>% 
+  set_engine("glm")
 
 
 ```
 
 #### Workflow
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 # change eval=FALSE to eval=TRUE
-
+gss16_wflow_1 <- workflow() %>% 
+  add_model(gss16_spec_1) %>% 
+  add_recipe(gss16_rec_1) %>%
+  print()
 
 ```
 
@@ -109,11 +131,14 @@ gss16_rec_1 <- ___(___ ~ ___, data = ___) %>%
 
 #### Code
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 # change eval=FALSE to eval=TRUE
 
-gss16_fit_1 <- ___
+gss16_fit_1 <- gss16_wflow_1 %>% 
+  fit(data = gss16_train) 
 
+gss16_fit_1 %>% print()
+ 
 ```
 
 ### Ex. 3. b)
