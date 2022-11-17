@@ -1,8 +1,7 @@
 ---
 title: "HW 04 - Model and review"
-subtitle: "Due: 18 November, 12:00 UK time"
-author: "YOUR NAME"
-date: "TODAY'S DATE"
+author: "Myles Douglas"
+date: "16/11/2022"
 output: html_document
 ---
 
@@ -23,7 +22,6 @@ gss16<-read_csv( "gss16.csv")
 #### Code
 
 ```{r eval=TRUE}
-
 
 gss16 <- gss16 %>%
   mutate(
